@@ -1,0 +1,81 @@
+---
+title: "Homework 6"
+author: "Emil Jacobsen"
+date: "2022-10-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# install.packages("gganimate")
+# install.packages("gifski")
+# install.packages("av")
+# install.packages("gapminder")
+library(tidyverse)
+library(dplyr)
+library(gapminder)
+
+gapminder <- gapminder
+```
+
+
+Define a defensive function that calculates the Gross Domestic Product of a nation from the data available in the gapminder dataset. You can use the population and GDPpercapita columns for it. Using that function, calculate the GDP of Denmark in the following years: 1967, 1977, 1987, 1997, 2007, and 2017.
+
+```{r}
+#defining defensive function checking for collumns year, country, pop and gdppercap
+gdp_calculator <- function(data, year, country){
+  if(any(data$country == country) & any(data$year == year)){
+    data_alt <- data[data$year == year,]
+    data_alt <- data_alt[data_alt$country == country,]
+  }
+  else {
+    stop("country and year unavailable")
+  }
+  if(any(names(data_alt) == c('pop', 'gdpPercap'))){
+    gdp <- data_alt$pop * data_alt$gdpPercap
+  }
+  else {stop("population and gdp pr cap unavailable")
+  }
+  gdp
+}
+
+```
+
+
+
+
+```{r}
+
+#making list of years and getting R to print these years using the function
+years <- c(1967, 1977, 1987, 1997, 2007, 2017)
+
+for (i in 1:length(years)){
+  print(gdp_calculator(gapminder, year = years[i], country = "Denmark"))
+  
+}
+```
+
+Write a script that loops over each country in the gapminder dataset, tests whether the country starts with a ‘B’ , and prints out whether the life expectancy is smaller than 50, between 50 and 70, or greater than 70. (Hint: remember the grepl function, and review the Control Flow tutorial)
+
+```{r}
+
+b_countries <- grep("^B", unique(gapminder$country), value=TRUE)
+threshold_1 <- 50
+threshold_2 <- 70
+
+for (country in b_countries){
+  rns <- mean(gapminder[gapminder$country == country, "lifeExp"])
+  
+  if (rns < threshold_1) {
+    cat("Life Expectancy in", country, "is lower than", threshold_1, "\n")
+  } else if (rns > threshold_1 && rns < threshold_2) {
+     cat("Life Expectancy in", country, "is between", threshold_1, "and", threshold_2, "\n")
+  } else {
+     cat("Life Expectancy in", country, "is bigger than", threshold_2, "\n")
+  }
+  rm(rns)
+}
+  

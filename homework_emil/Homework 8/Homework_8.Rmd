@@ -4,9 +4,9 @@ author: "Emil Jacobsen"
 date: "2022-11-14"
 output: html_document
 ---
-Github Link: https://github.com/Digital-Methods-HASS/AU633260_Emil_B_Jacobsen/tree/main/homework_emil
+Github Link for Entire rproject and HTML: https://github.com/Digital-Methods-HASS/AU633260_Emil_B_Jacobsen/tree/main/homework_emil
 
-Loading Packages
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,

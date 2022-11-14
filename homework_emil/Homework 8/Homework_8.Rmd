@@ -4,7 +4,7 @@ author: "Emil Jacobsen"
 date: "2022-11-14"
 output: html_document
 ---
-
+Github Link: https://github.com/Digital-Methods-HASS/AU633260_Emil_B_Jacobsen/tree/main/homework_emil
 
 Loading Packages
 ```{r setup, include=FALSE}

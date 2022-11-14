@@ -1,0 +1,107 @@
+---
+title: "Homework_8_Sentiment_Analysis"
+author: "Emil Jacobsen"
+date: "2022-11-14"
+output: html_document
+---
+
+
+Loading Packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+
+library(tidyverse)
+library(here)
+library(pdftools)
+library(tidytext)
+library(textdata) 
+library(ggwordcloud)
+
+
+```
+
+Getting the document from the data folder
+
+```{r get-document}
+#getting the data
+scw_path <- here("data","Spanish_Civil_War.pdf")
+scw_text <- pdf_text(scw_path)
+```
+
+
+
+
+```{r split-lines}
+scw_df <- data.frame(scw_text) %>% 
+  mutate(text_full = str_split(scw_text, pattern = '\\n')) %>% #splitting collumns
+  unnest(text_full) %>% #putting into regular collumns
+  mutate(text_full = str_trim(text_full)) #removing white spaces
+
+```
+
+Now each line, on each page, is its own row, with extra starting & trailing spaces removed. 
+
+### Get the tokens (individual words) in tidy format
+
+Use `tidytext::unnest_tokens()` (which pulls from the `tokenizer`) package, to split columns into tokens. We are interested in *words*, so that's the token we'll use:
+
+```{r tokenize}
+scw_tokens <- scw_df %>% 
+  unnest_tokens(word, text_full)
+
+# See how this differs from `scw_df`
+# Each word has its own row!
+```
+
+Counting words
+```{r count-words}
+scw_wc <- scw_tokens %>% 
+  count(word) %>% 
+  arrange(-n)
+```
+
+Making and removing stopwords
+```{r stopwords}
+scw_stop <- scw_tokens %>% 
+  anti_join(stop_words) %>% 
+  select(-scw_text)
+```
+
+Counting words with stopword list
+```{r count-words2}
+scw_swc <- scw_stop %>% 
+  count(word) %>% 
+  arrange(-n)
+```
+
+Removing numbers
+```{r skip-numbers}
+
+scw_no_numeric <- scw_stop %>% 
+  filter(is.na(as.numeric(word)))
+```
+
+
+filtering 100 most used words
+```{r wordcloud-prep}
+
+length(unique(scw_no_numeric$word))
+
+scw_top100 <- scw_no_numeric %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  head(100)
+```
+
+
+Making a wordcloud to see how which authors are most used in the notes
+```{r wordcloud-pro}
+ggplot(data = scw_top100, aes(label = word, size = n)) +
+  geom_text_wordcloud_area(aes(color = n), shape = "square") +
+  scale_size_area(max_size = 16) +
+  scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+  theme_minimal()
+```
+As we can see the, the most used authors are Preston, Beevor, and Payne

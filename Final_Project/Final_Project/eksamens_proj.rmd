@@ -11,10 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r installing and enabling packages, include=FALSE}
-#install.packages("tidyverse")
-#install.packages("here")
-#install.packages("ggridges")
-#unhastag the above if not installed
+install.packages("tidyverse")
+install.packages("here")
+install.packages("ggridges")
+install.packages("janitor")
+#hastag the above are installed
 
 
 library(tidyverse)
